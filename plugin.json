@@ -1,0 +1,7 @@
+{
+  "name": "Map logger",
+  "author": "_owler_#0954",
+  "main": "mapLogger.Primary",
+  "description": "A plugin to Log all actions.",
+  "version": 1.0
+}
