@@ -35,6 +35,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.zip.InflaterInputStream;
 
 import static mindustry.Vars.state;
@@ -72,7 +73,7 @@ public class Primary extends Plugin{
         });
         Events.on(GameOverEvent.class,event->{
             try {
-                createGif(event.winner.name,gif);
+                createGif(event.winner.name+new Date().toString(),gif);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -85,7 +86,7 @@ public class Primary extends Plugin{
         int x=world.tiles.width;
             BufferedImage image=new BufferedImage(x,y,BufferedImage.TYPE_INT_ARGB);
             java.awt.Color c=new java.awt.Color(0,255,0);
-            
+
             int a=0,b=0;
             while(a<x){
                 b=0;
@@ -96,41 +97,24 @@ public class Primary extends Plugin{
                 }
                 a++;
             }
+            int ty=y-5;
+            int tx=x+5;
             for(Player p:Groups.player){
                 int ux=p.tileX();
                 int uy=p.tileY();
                 image.setRGB(ux,uy,p.team().color.rgba8888());
             }
-            //image.getGraphics().drawImage(image2,0,0,null);
-            Fi imageFile = new Fi("config/image_test.png");
-            ImageIO.write(image, "png", imageFile.file());
             return image;
     }
 
     int conv(int rgba){
         return co.set(rgba).argb8888();
     }
-    @Override
-    public void registerServerCommands(CommandHandler handler){
-        handler.register("screen", "screenshot", args -> {
-            try {
-                readMap();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        handler.register("replay", "gif", args -> {
-            try {
-                readMap();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
+
     public void createGif(String name,Seq<BufferedImage> img) throws IOException {
         BufferedImage firstImage = img.first();
         img.remove(1);
-        Fi ff=new Fi("config/replays/"+name+".gif");
+        Fi ff=new Fi("config/replays/"+name.replace(' ','_').replace(':','_')+".gif");
         ff.write();ff.write().close();
         File f=new File(ff.absolutePath());
         // create a new BufferedOutputStream with the last argument
